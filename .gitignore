@@ -1,0 +1,13 @@
+# Pasta de build (contém o binário e arquivos do CMake)
+build/
+
+# Binários e executáveis gerados na raiz (caso não fiquem na build)
+lithium
+*.exe
+*.o
+
+# Pastas de configuração de IDEs
+.vscode/
+
+# Arquivos de sistema e temporários
+.DS_Store
