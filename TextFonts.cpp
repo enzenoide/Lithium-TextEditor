@@ -23,10 +23,10 @@ void TextFonts::render(SDL_Renderer *renderer, const char *message, int x, int y
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,surface);
     SDL_FreeSurface(surface);
     SDL_Rect rectangle;
-    rectangle.x = 10;
-    rectangle.y = 10;
-    rectangle.w = 400;
-    rectangle.h = 300;
+    rectangle.x = 0;
+    rectangle.y = 0;
+    rectangle.w = 600;
+    rectangle.h = 64;
     SDL_RenderCopy(renderer, texture, NULL, &rectangle);
     SDL_DestroyTexture(texture); // Libera a memória para não dar leak
 

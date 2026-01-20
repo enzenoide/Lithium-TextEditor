@@ -30,12 +30,7 @@ int main(){
     }
     SDL_SetRenderDrawColor(renderer,169,169,169,1);
     SDL_RenderClear(renderer);
-    SDL_Color Preto = {0,0,0,0};
-    SDL_Renderer *rend = window.Get_Renderer();
     SDL_Color black = {0,0,0};
-    if(rend == nullptr){
-        std::cout << "O PONTEIRO É NULO" << std::endl;
-    }
     myFont.render(renderer,"a b c d e f g h i j k l m n o p q r s t u v w x y z",800,250,black);
     SDL_RenderPresent(renderer);
   }
