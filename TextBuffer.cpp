@@ -22,7 +22,7 @@ bool TextBuffer::insert(char character, int row, int col){
       return true;
   }
 }
-bool TextBuffer::deleter(char character,int row,int col){
+bool TextBuffer::deleter(int row,int col){
     if(!isValid(row, col)){
       return false;
   }
@@ -59,4 +59,10 @@ bool TextBuffer::merge_lines(int row, int col){
   }
     storage[row].erase(storage[row].begin(), storage[row].end());
     return true;
+}
+bool TextBuffer::lineLength(int row){
+   if(row < storage.size()){
+      return false;
+  } 
+   return storage[row].size();
 }
