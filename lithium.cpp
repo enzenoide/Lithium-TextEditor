@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_pixels.h>
 #include <iostream>
 #include "RenderWindow.hpp"
@@ -14,24 +16,30 @@ int main(){
   }
   std::cout << "DEBUG: TENTANDO CRIAR FONTE" << std::endl;
   RenderWindow window("lithium",800,600);
-  TextFonts myFont("assets/fonts/fonte.ttf",28);
+  TextFonts myFont("assets/fonts/fonte.ttf",14);
   SDL_Renderer *renderer = window.Get_Renderer();
   if(renderer == NULL){
       std::cout << "Renderer could not be created! STD ERROR: " << SDL_GetError();
   }
-
+  SDL_Color black = {0,0,0};
   bool running = true;
+  SDL_StartTextInput();
+  std::string currentText;
   while(running){
       SDL_Event event;
-      while(SDL_PollEvent(&event) != 0){
-        if(event.type == SDL_QUIT){
-          running = false;
-      }
+      while(SDL_PollEvent(&event)){
+        switch(event.type) {
+            case SDL_TEXTINPUT:
+              currentText += event.text.text;
+              break;
+            case SDL_QUIT:
+              running = false;
+              break;
+      } 
     }
     SDL_SetRenderDrawColor(renderer,169,169,169,1);
     SDL_RenderClear(renderer);
-    SDL_Color black = {0,0,0};
-    myFont.render(renderer,"a b c d e f g h i j k l m n o p q r s t u v w x y z",800,250,black);
+    myFont.render(renderer,currentText.c_str(),128,64,black);
     SDL_RenderPresent(renderer);
   }
   SDL_Quit();

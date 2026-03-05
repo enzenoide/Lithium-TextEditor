@@ -10,7 +10,14 @@ int Editor::getCol() const{
 int Editor::getRow() const{
     return row;
 }
-
+bool Editor::insertChar(char a){
+  if(a){
+    if(text -> insert(a,row,col))
+      return true;
+    return false;
+  }
+  return false;
+}
 bool Editor::Enter(){
     if(text -> split_lines(getRow(),getCol())){
       row++;
@@ -20,19 +27,22 @@ bool Editor::Enter(){
     return false;
 }
 bool Editor::Backspace(){
-   if(text -> deleter(getRow(),getCol())){
+   if(col > 0){
+    if(text -> deleter(row,col - 1)){
       col--;
       return true;
+    }
+    return false;
   }
-   else if (col == 0) {
-      if(int prevLine = text -> lineLength(row-1)){
-          text -> merge_lines(row,col);
+    if(row > 0){
+        int prevLine = text -> lineLength(row-1);
+          if(text -> merge_lines(row)){
           row--;
           col += prevLine;
           return true;
-    }
-  }
-    return false;
+        }
+      }
+      return false;
 }
 bool Editor::Space(){
     if(text -> insert(' ',row,col)){
@@ -43,42 +53,43 @@ bool Editor::Space(){
 }
 bool Editor::Tab(){
    for(int i = 0; i < 8; ++i){
-      text -> insert(' ',row,col);
+      if(!text -> insert(' ',row,col))
+        return false;
       col++;
   }
     return true;
 }
 bool Editor::moveRight(){
-    if(col <= text -> lineLength(row)){
+    if(col < text -> lineLength(row)){
       col++;
+      return true;
   }
-    return true;
+    return false;
 }
 bool Editor::moveLeft(){
-    if(col >= 0){
+    if(col > 0){
       col--;
+      return true;
   }
-    return true;
+    return false;
 }
 bool Editor::moveUp(){
-  int prevLine = text -> lineLength(row-1);
-  int currentLine = text -> lineLength(row);
-  if(currentLine < prevLine){
-      row--;
-      col = prevLine;
-      return true;
+  if(row > 0){
+    row--;
+    int newLineLength = text ->  lineLength(row);
+    if(col > newLineLength)
+      col = newLineLength;
+    return true;
   }
-  row--;
-  return true;
+  return false;
 }
 bool Editor::moveDown(){
-  int nextLine = text -> lineLength(row+1);
-  int currentLine = text -> lineLength(row);
-  if(currentLine > nextLine){
-      row++;
-      col = nextLine;
-      return true;
+  if(row + 1 < text->lineCount()){
+    row++;
+    int newLineLength = text -> lineLength(row);
+    if(col > newLineLength)
+      col = newLineLength;
+    return true;
   }
-  row++;
-  return true;
+  return false;
 }

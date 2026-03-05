@@ -8,14 +8,14 @@ public:
     bool Enter();
     bool Space();
     bool Tab();
-
+    bool insertChar(char a);
     bool moveRight();
     bool moveLeft();
     bool moveUp();
     bool moveDown();
 
-    int getRow() const;
-    int getCol() const;
+    int getRow()const;
+    int getCol()const;
 private:
     int row,col;
     TextBuffer *text;
