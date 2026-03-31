@@ -7,6 +7,8 @@
 #include "RenderWindow.hpp"
 #include <SDL2/SDL_ttf.h>
 #include "TextFonts.hpp"
+#include "Editor.hpp"
+#include "TextBuffer.hpp"
 int main(){
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
     std::cout << "SDL Could not initialize! SDL ERROR: " << SDL_GetError();
@@ -24,13 +26,29 @@ int main(){
   SDL_Color black = {0,0,0};
   bool running = true;
   SDL_StartTextInput();
-  std::string currentText;
+  TextBuffer buffer;
+  Editor editor(buffer);
   while(running){
       SDL_Event event;
       while(SDL_PollEvent(&event)){
         switch(event.type) {
             case SDL_TEXTINPUT:
-              currentText += event.text.text;
+              editor.insertText(event.text.text[0]);
+              break;
+            case SDL_KEYDOWN:
+              if(event.key.keysym.sym == SDLK_BACKSPACE){
+                editor.Backspace();
+              }
+              if(event.key.keysym.sym == SDLK_RETURN){
+                editor.Enter();
+              }
+              
+              if(event.key.keysym.sym == SDLK_RIGHT){
+                editor.Right();
+              }
+              if(event.key.keysym.sym == SDLK_LEFT){
+                editor.Left();
+              }
               break;
             case SDL_QUIT:
               running = false;
@@ -39,7 +57,10 @@ int main(){
     }
     SDL_SetRenderDrawColor(renderer,169,169,169,1);
     SDL_RenderClear(renderer);
-    myFont.render(renderer,currentText.c_str(),128,64,black);
+    const auto& lines = buffer.getLines();
+    for(int i = 0; i < lines.size();++i){
+      myFont.render(renderer,lines[i].c_str(),0,0 + i * 10,black);
+    }
     SDL_RenderPresent(renderer);
   }
   SDL_Quit();
