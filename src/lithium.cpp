@@ -18,7 +18,7 @@ int main(){
   }
   std::cout << "DEBUG: TENTANDO CRIAR FONTE" << std::endl;
   RenderWindow window("lithium",800,600);
-  TextFonts myFont("assets/fonts/fonte.ttf",14);
+  TextFonts myFont("assets/fonts/fonte.ttf",20);
   SDL_Renderer *renderer = window.Get_Renderer();
   if(renderer == NULL){
       std::cout << "Renderer could not be created! STD ERROR: " << SDL_GetError();
@@ -58,8 +58,36 @@ int main(){
     SDL_SetRenderDrawColor(renderer,169,169,169,1);
     SDL_RenderClear(renderer);
     const auto& lines = buffer.getLines();
+    int lineHeight = TTF_FontHeight(myFont.getFont());
     for(int i = 0; i < lines.size();++i){
-      myFont.render(renderer,lines[i].c_str(),0,0 + i * 10,black);
+        myFont.render(renderer, lines[i].c_str(), 0, i * lineHeight, black);
+    }
+    int row = editor.getRow();
+    int col = editor.getCol();
+    int cursorX = 0;
+    int cursorY = row * TTF_FontHeight(myFont.getFont());
+    if(row < lines.size()){
+      std::string beforeCursor = lines[row].substr(0,col);
+      int w = 0,h = 0;
+
+      if(!beforeCursor.empty()){
+        TTF_SizeText(myFont.getFont(),beforeCursor.c_str(),&w,&h);
+      }
+      cursorX = w;
+    }
+    Uint32 time = SDL_GetTicks();
+    bool showCursor = (time / 500) % 2 == 0;
+
+    if(showCursor){
+        SDL_Rect cursor = {
+          cursorX,
+          cursorY,
+          2,
+          TTF_FontHeight(myFont.getFont())
+      };
+
+      SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+      SDL_RenderFillRect(renderer, &cursor);
     }
     SDL_RenderPresent(renderer);
   }

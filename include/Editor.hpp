@@ -9,9 +9,9 @@ public:
     void Enter();
     void Right();
     void Left();
-    int getPosY()const;
-    int getPosX()const;
+    int getRow()const;
+    int getCol()const;
 private:
-    int posX,posY;
+    int row,col;
     TextBuffer *text;
 };

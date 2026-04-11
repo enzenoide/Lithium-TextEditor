@@ -4,6 +4,7 @@
 TextBuffer::TextBuffer(){
   lines.push_back("");
 }
+  
 bool TextBuffer::insertChar(int row,int col,char c){
   if(row < 0 || row > lines.size())
     return false;
@@ -12,18 +13,20 @@ bool TextBuffer::insertChar(int row,int col,char c){
   lines[row].insert(col,1,c);
   return true;
 }
-bool TextBuffer::deleteChar(int row,int col){
-  if(col == 0){
-    // condition if col == 0 and row != 0 needs to remove the string of the vector
-    // doesnt work because need to treat different the results
-    if(row != 0){
-      lines.erase(lines.begin() + row);
-      return true;
-    }
-    return false;
+deleteResult TextBuffer::deleteChar(int row,int col){
+    
+  if(row >= lines.size())
+    return deleteResult::Fail;
+  if(col > 0){
+    lines[row].erase(col - 1, 1);
+    return deleteResult::Success;
   }
-  lines[row].erase(col-1,col);
-  return true;
+  if(col == 0 && row > 0){
+    lines[row - 1] += lines[row];
+    lines.erase(lines.begin() + row);
+    return deleteResult::MergeWithPrevious;
+  }
+  return deleteResult::Fail;
 }
 bool TextBuffer::newLine(std::string row){
   lines.push_back(row);
@@ -41,7 +44,6 @@ bool TextBuffer::splitLine(int row, int col){
   }
   return false;
 }
-
 const std::vector<std::string>& TextBuffer::getLines()const{
   return lines;
 }

@@ -1,44 +1,49 @@
 #include "Editor.hpp"
+#include "TextBuffer.hpp"
 #include <iostream>
 
-Editor::Editor(TextBuffer &buffer): posX(0), posY(0), text(&buffer){}
+Editor::Editor(TextBuffer &buffer): row(0), col(0), text(&buffer){}
 
-int Editor::getPosX() const{
-    return posX;
+int Editor::getRow() const{
+    return row;
 }
-int Editor::getPosY() const{
-    return posY;
+int Editor::getCol() const{
+    return col;
 }
-void Editor::insertText(char a){
-  if(text -> insertChar(posX,posY,a)){
-    posY++;
-    std::cout << "michel" << std::endl;
+void Editor::insertText(char character){
+  if(text -> insertChar(row,col,character)){
+    col++;
   } 
 }
 void Editor::Backspace(){
-  if(text -> deleteChar(posX,posY - 1)){
-    posY--;
-    std::cout<<"follen" << std::endl;
+  deleteResult result = text -> deleteChar(row,col);
+
+  if(result == deleteResult::Success){
+    col--;
+  }
+  else if(result == deleteResult::MergeWithPrevious){
+    row--;
+    col = text -> getLines()[row].size();
   }
 }
 
 void Editor::Enter(){
-  if(text -> splitLine(posX,posY)){
-    posX++;
+  if(text -> splitLine(row,col)){
+    row++;
   }
   else{
     text -> newLine("");
-    posX++;
-    posY = 0;
+    row++;
+    col = 0;
   }
 }
 
 void Editor::Right(){
-  posY++;
+  col++;
 }
 
 void Editor::Left(){
-  posY--;
+  col--;
 }
 
 
