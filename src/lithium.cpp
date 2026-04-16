@@ -16,7 +16,6 @@ int main(){
     if(TTF_Init() < 0){
       std::cout << "TTF could not be initialized! SDL ERROR: " << SDL_GetError();
   }
-  std::cout << "DEBUG: TENTANDO CRIAR FONTE" << std::endl;
   RenderWindow window("lithium",800,600);
   TextFonts myFont("assets/fonts/fonte.ttf",20);
   SDL_Renderer *renderer = window.Get_Renderer();
@@ -58,15 +57,16 @@ int main(){
     SDL_SetRenderDrawColor(renderer,169,169,169,1);
     SDL_RenderClear(renderer);
     const auto& lines = buffer.getLines();
-    int lineHeight = TTF_FontHeight(myFont.getFont());
+    int rawHeight = TTF_FontHeight(myFont.getFont());
+    float espacamento = 0.7f;
+    int lineHeight = (int)(rawHeight * espacamento);
     for(int i = 0; i < lines.size();++i){
         myFont.render(renderer, lines[i].c_str(), 0, i * lineHeight, black);
     }
     int row = editor.getRow();
     int col = editor.getCol();
     int cursorX = 0;
-    int cursorY = row * TTF_FontHeight(myFont.getFont());
-    if(row < lines.size()){
+      if(row < lines.size()){
       std::string beforeCursor = lines[row].substr(0,col);
       int w = 0,h = 0;
 
@@ -76,14 +76,17 @@ int main(){
       cursorX = w;
     }
     Uint32 time = SDL_GetTicks();
+    int ascent = TTF_FontAscent(myFont.getFont());
+    int cursorHeight = (int)(0.8f * ascent);
+    int yOffsetManual = 4;
+    int cursorY = (row * lineHeight) + yOffsetManual;
     bool showCursor = (time / 500) % 2 == 0;
-
-    if(showCursor){
+      if(showCursor){  
         SDL_Rect cursor = {
           cursorX,
-          cursorY,
+          cursorY + yOffsetManual,
           2,
-          TTF_FontHeight(myFont.getFont())
+          cursorHeight
       };
 
       SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

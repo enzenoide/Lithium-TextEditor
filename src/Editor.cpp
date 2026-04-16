@@ -17,7 +17,6 @@ void Editor::insertText(char character){
 }
 void Editor::Backspace(){
   deleteResult result = text -> deleteChar(row,col);
-
   if(result == deleteResult::Success){
     col--;
   }
@@ -28,6 +27,8 @@ void Editor::Backspace(){
 }
 
 void Editor::Enter(){
+  if(row == 30)
+    return;
   if(text -> splitLine(row,col)){
     row++;
   }
